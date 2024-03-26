@@ -1,4 +1,4 @@
-/*Oonsidere um programa de cadastro (de produtos, clientes, veículos, etc) que contém, no mínimo, 10 registros alocados de forma estática na memória. Cada registro deve conter, no mínimo, três variáveis. O programa deve exibir um menu de opções ao usuário, com as seguintes funcionalidades:
+/*Considere um programa de cadastro (de produtos, clientes, veículos, etc) que contém, no mínimo, 10 registros alocados de forma estática na memória. Cada registro deve conter, no mínimo, três variáveis. O programa deve exibir um menu de opções ao usuário, com as seguintes funcionalidades:
 
 Cadastrar um novo item
 
