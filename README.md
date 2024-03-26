@@ -3,13 +3,13 @@
 ## O trabalho final da disciplina de Algoritmos e Estruturas de Dados II
 
 ![GitHub language count](https://img.shields.io/static/v1?label=C&message=framework&color=blue&style=for-the-badge&logo=C)
-![Status](https://img.shields.io/static/v1?label=STATUS&message=CONCLUIDO&color=GREEN&style=for-the-badge)
+![Status](https://img.shields.io/static/v1?label=STATUS&message=ANDAMENTO&color=GREEN&style=for-the-badge)
 
 > 
 
 ### OBJETIVOS GERAIS
 
-[ENUNCIADO](https://github.com/DebbieMatt/Trabalho-de-AED/blob/a0fcc911ff5e4b85a132d8899a734875f1b89b92/tabela%20pre%C3%A7o.pdf).
+[ENUNCIADO](https://github.com/DebbieMatt/Trabalgo-AED2/blob/366d513adda6a7f7c0ccb7842658d44b7f50aa63/Enunciado.pdf).
 
 ## 💻 Pré-requisitos
 
@@ -18,14 +18,14 @@ Antes de começar, verifique se você atendeu aos seguintes requisitos:
 - Você instalou a versão mais recente de `GCC` ou rodar em compilador online, como: <a href= "https://www.onlinegdb.com/online_c++_compiler" > OnlineGDB </a>
   
 - Você tem uma máquina `Windows / Linux / Mac`.
-- Você leu [Especificações](https://github.com/DebbieMatt/Trabalho-de-AED/blob/d686341ba760d82f0cb46b7a0e54c9432a6c249f/Descri%C3%A7%C3%A3o%20do%20trabalho.pdf).
+- Você leu [Especificações](https://github.com/DebbieMatt/Trabalgo-AED2/blob/366d513adda6a7f7c0ccb7842658d44b7f50aa63/Enunciado.pdf).
 
 ## 🚀 Instalando o Trabalho Final
 
 Para clonar o código, no Linux / macOS / Windows, basta abrir o terminal e colar o seguinte comando:
 
 ```
-git clone https://github.com/DebbieMatt/Trabalho-de-AED.git
+git clone https://github.com/DebbieMatt/Trabalho-AED2.git
 ```
 
 ## 📫 Contribuindo para a manutenção
