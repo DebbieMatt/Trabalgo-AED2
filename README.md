@@ -62,16 +62,14 @@ Agradecemos às seguintes pessoas que contribuíram para este projeto:
         </sub>
       </a>
     </td>
-
     <td align="center">
-      <a href="https://github.com/m4vi" title="Colaboradora">
-        <img src="" width="100px;" alt="Foto da Larissa"/><br>
+      <a href="https://github.com/larissarochas" title="Colaboradora">
+        <img src="https://avatars.githubusercontent.com/u/128712757?v=4" width="100px;" alt="Foto da Larissa"/><br>
         <sub>
           <b>Larissa Rocha</b>
         </sub>
       </a>
     </td>
-    
   </tr>
 </table>
 
