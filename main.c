@@ -71,6 +71,23 @@ MEDICO *cadastrarMedico()
     return novoMedico;
 }
 
+// Função de comparação para qsort
+int compararPacientes(const void *a, const void *b)
+{
+    PACIENTE *pacienteA = (PACIENTE *)a;
+    PACIENTE *pacienteB = (PACIENTE *)b;
+
+    // Primeiro, compare os nomes
+    int nomeComparacao = strcmp(pacienteA->nome, pacienteB->nome);
+    if (nomeComparacao != 0)
+    {
+        return nomeComparacao; // Se os nomes são diferentes, retorne o resultado da comparação de nomes
+    }
+
+    // Se os nomes são iguais, compare as idades
+    return pacienteA->idade - pacienteB->idade;
+}
+
 void salvarEmArquivo(PACIENTE *novoPaciente, int quantidade)
 {
     FILE *arq = fopen("arquivo.txt", "w"); // abri ou cria um arq txt e escreve.
@@ -113,8 +130,8 @@ void imprimirConteudoDoArquivo(PACIENTE *novoPaciente, int quantidade)
 
 int main()
 {
-    PACIENTE *novoPaciente;
-    int quantidade;
+    PACIENTE *novoPaciente = NULL;
+    int quantidade = 0;
     MEDICO *novoMedico;
     int op;
 
@@ -128,26 +145,29 @@ int main()
         printf("5 - Realizar atendimento\n");
         printf("6 - Listar atendimento\n");
         printf("7 - Cancelar atendimento\n");
-        printf("8 - Salvar em Arquivo\n"); // pronto e executando;
-        printf("9 - Ler este Arquivo\n");  // pronto e executando;
+        printf("8 - Salvar em Arquivo\n");
+        printf("9 - Ler este Arquivo\n");
         printf("0 - Sair\n");
-
         scanf("%d", &op);
         getchar(); // Limpa o buffer de entrada após o scanf
-
         switch (op)
         {
         case 1:
-            novoPaciente = cadastrarPaciente();
+            novoPaciente = realloc(novoPaciente, (quantidade + 1) * sizeof(PACIENTE));
+            novoPaciente[quantidade] = *cadastrarPaciente();
             quantidade++;
             break;
+
         case 2:
             novoMedico = cadastrarMedico();
             quantidade++;
             break;
         case 3:
-            printf("Lista de Pacientes: \n");
-            // Função listar pacientes
+            qsort(novoPaciente, quantidade, sizeof(PACIENTE), compararPacientes);
+            for (int i = 0; i < quantidade; i++)
+            {
+                printf("Nome: %s, Idade: %d\n", novoPaciente[i].nome, novoPaciente[i].idade);
+            }
             break;
         case 4:
             printf("Lista de Medicos: \n");
@@ -164,10 +184,10 @@ int main()
             break;
         case 8:
             salvarEmArquivo(novoPaciente, quantidade);
-            break; // pronto e executando;
+            break;
         case 9:
             imprimirConteudoDoArquivo(novoPaciente, quantidade);
-            break; // pronto e executando;
+            break;
         case 0:
             printf("Saindo do sistema\n");
             exit(0);
@@ -176,6 +196,6 @@ int main()
             break;
         }
     } while (op != 0);
-
+    free(novoPaciente);
     return 0;
 }
