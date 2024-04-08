@@ -14,6 +14,14 @@ typedef struct
     char especialidade[50];
 } MEDICO;
 
+typedef struct 
+{
+    PACIENTE *paciente;
+    MEDICO *medico;
+    char motivo[50];
+    int prioridade;
+} ATENDIMENTO;
+
 // Estrutura para uma lista encadeada
 typedef struct ITEM
 {
@@ -26,6 +34,34 @@ typedef struct
     ITEM *inicio;
     int qtde;
 } LISTA;
+
+//Inicializa a lista
+void inicializa(LISTA *l)
+{
+    l->inicio = NULL;
+    l->qtde = 0;
+}
+
+//Insere um elemento na lista
+void inserir(LISTA *l, void *chave)
+{
+    ITEM *novoItem = (ITEM*)malloc(sizeof(ITEM));
+    novoItem->chave = chave;
+    novoItem->prox = l->inicio;
+    l->inicio = novoItem;
+    l->qtde++;
+}
+
+//Imprime os dados do paciente
+void imprimirPaciente(void *chave)
+{
+    if (chave != NULL)
+    {
+        PACIENTE *p = (PACIENTE*)chave;
+        printf("Nome: %s\n", p->nome);
+        printf("Idade: %s\n", p->idade);
+    }
+}
 
 // Função para cadastrar paciente
 PACIENTE *cadastrarPaciente()
@@ -86,6 +122,23 @@ int compararPacientes(const void *a, const void *b)
 
     // Se os nomes são iguais, compare as idades
     return pacienteA->idade - pacienteB->idade;
+}
+
+//Função para listar pacientes cadastrados
+void listarPacientes(PACIENTE *p, int quantidade)
+{
+    if (p == NULL || quantidade == 0)
+    {
+        printf("Nenhum paciente cadastrado!\n");
+        return;
+    }
+
+    printf("Paciente Cadastrados:\n");
+    for (int i = 0; i < quantidade; i++)
+    {
+        printf("Nome: %s\n", p[i].nome);
+        printf("Idade: %d\n", p[i].idade);
+    }
 }
 
 void salvarEmArquivo(PACIENTE *novoPaciente, int quantidade)
@@ -164,10 +217,7 @@ int main()
             break;
         case 3:
             qsort(novoPaciente, quantidade, sizeof(PACIENTE), compararPacientes);
-            for (int i = 0; i < quantidade; i++)
-            {
-                printf("Nome: %s, Idade: %d\n", novoPaciente[i].nome, novoPaciente[i].idade);
-            }
+            listarPacientes(novoPaciente, quantidade);
             break;
         case 4:
             printf("Lista de Medicos: \n");
