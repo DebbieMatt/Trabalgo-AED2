@@ -85,28 +85,6 @@ PACIENTE *cadastrarPaciente()
     return novoPaciente;
 }
 
-// Função para cadastrar médico
-MEDICO *cadastrarMedico()
-{
-    MEDICO *novoMedico = (MEDICO *)malloc(sizeof(MEDICO)); // Alocando memória
-    if (novoMedico == NULL)
-    {
-        printf("Erro ao alocar memoria!\n");
-        return NULL;
-    }
-
-    printf("CADASTRO DE MEDICO\n");
-    printf("Nome: ");
-    fgets(novoMedico->nome, sizeof(novoMedico->nome), stdin);
-    novoMedico->nome[strcspn(novoMedico->nome, "\n")] = '\0';
-
-    printf("Especialidade: ");
-    fgets(novoMedico->especialidade, sizeof(novoMedico->especialidade), stdin);
-    novoMedico->especialidade[strcspn(novoMedico->especialidade, "\n")] = '\0';
-
-    return novoMedico;
-}
-
 // Função de comparação para qsort
 int compararPacientes(const void *a, const void *b)
 {
@@ -138,6 +116,94 @@ void listarPacientes(PACIENTE *p, int quantidade)
     {
         printf("Nome: %s\n", p[i].nome);
         printf("Idade: %d\n", p[i].idade);
+    }
+}
+
+// Função para cadastrar médico
+MEDICO *cadastrarMedico()
+{
+    MEDICO *novoMedico = (MEDICO *)malloc(sizeof(MEDICO)); // Alocando memória
+    if (novoMedico == NULL)
+    {
+        printf("Erro ao alocar memoria!\n");
+        return NULL;
+    }
+
+    printf("CADASTRO DE MEDICO\n");
+    printf("Nome: ");
+    fgets(novoMedico->nome, sizeof(novoMedico->nome), stdin);
+    novoMedico->nome[strcspn(novoMedico->nome, "\n")] = '\0';
+
+    printf("Especialidade: ");
+    fgets(novoMedico->especialidade, sizeof(novoMedico->especialidade), stdin);
+    novoMedico->especialidade[strcspn(novoMedico->especialidade, "\n")] = '\0';
+
+    return novoMedico;
+}
+
+void imprimirMedico(void *chave)
+{
+    if (chave != NULL)
+    {
+        MEDICO *m = (MEDICO*)chave;
+        printf("Nome: %s\n", m->nome);
+        printf("Especialidade: %s\n", m->especialidade);
+    }
+}
+
+// Função para cadastrar médico
+MEDICO *cadastrarMedico()
+{
+    MEDICO *novoMedico = (MEDICO *)malloc(sizeof(MEDICO)); // Alocando memória
+    if (novoMedico == NULL)
+    {
+        printf("Erro ao alocar memoria!\n");
+        return NULL;
+    }
+
+    printf("CADASTRO DE MEDICO\n");
+    printf("Nome: ");
+    fgets(novoMedico->nome, sizeof(novoMedico->nome), stdin);
+    novoMedico->nome[strcspn(novoMedico->nome, "\n")] = '\0';
+
+    printf("Especialidade: ");
+    fgets(novoMedico->especialidade, sizeof(novoMedico->especialidade), stdin);
+    novoMedico->especialidade[strcspn(novoMedico->especialidade, "\n")] = '\0';
+
+    return novoMedico;
+}
+
+// Função de comparação para qsort
+int compararMedicos(const void *a, const void *b)
+{
+    MEDICO *medicoA = (MEDICO *)a;
+    MEDICO *medicoB = (MEDICO *)b;
+
+    // Primeiro, compare os nomes
+    int nomeComparacao = strcmp(medicoA->nome, medicoB->nome);
+    if (nomeComparacao != 0)
+    {
+        return nomeComparacao; // Se os nomes são diferentes, retorne o resultado da comparação de nomes
+    }
+
+    // Se os nomes são iguais, compare as idades
+    return medicoA->especialidade - medicoB->especialidade;
+}
+
+//Função para listar os médicos cadastrados
+void listarMedicos(MEDICO *m, int quantidade)
+{
+    if (m == NULL || quantidade == 0)
+    {
+        printf("Nenhum medico cadastrado!\n");
+        return;
+    }
+
+    printf("\nMedicos Cadastrados:");
+    for (int i = 0; i < quantidade; i++)
+    {
+        printf("\nNome: %s\n", m[i].nome);
+        printf("Especialidade: %s\n", m[i].especialidade);
     }
 }
 
@@ -184,8 +250,9 @@ void imprimirConteudoDoArquivo(PACIENTE *novoPaciente, int quantidade)
 int main()
 {
     PACIENTE *novoPaciente = NULL;
-    int quantidade = 0;
-    MEDICO *novoMedico;
+    MEDICO *novoMedico = NULL;
+    int qtdePacientes = 0;
+    int qtdeMedicos = 0;
     int op;
 
     do
@@ -206,22 +273,23 @@ int main()
         switch (op)
         {
         case 1:
-            novoPaciente = realloc(novoPaciente, (quantidade + 1) * sizeof(PACIENTE));
-            novoPaciente[quantidade] = *cadastrarPaciente();
-            quantidade++;
+            novoPaciente = realloc(novoPaciente, (qtdePacientes + 1) * sizeof(PACIENTE));
+            novoPaciente[qtdePacientes] = *cadastrarPaciente();
+            qtdePacientes++;
             break;
 
         case 2:
-            novoMedico = cadastrarMedico();
-            quantidade++;
+            novoMedico = realloc(novoMedico, (qtdeMedicos + 1) * sizeof(MEDICO));
+            novoMedico[qtdeMedicos] = *cadastrarMedico();
+            qtdeMedicos++;
             break;
         case 3:
-            qsort(novoPaciente, quantidade, sizeof(PACIENTE), compararPacientes);
-            listarPacientes(novoPaciente, quantidade);
+            qsort(novoPaciente, qtdePacientes, sizeof(PACIENTE), compararPacientes);
+            listarPacientes(novoPaciente, qtdePacientes);
             break;
         case 4:
-            printf("Lista de Medicos: \n");
-            // Função para listar médicos
+            qsort(novoMedico, qtdeMedicos, sizeof(MEDICO), compararMedicos);
+            listarMedicos(novoMedico, qtdeMedicos);
             break;
         case 5:
             // Realizar atendimentos
@@ -233,10 +301,10 @@ int main()
             // cancelar atendimentos
             break;
         case 8:
-            salvarEmArquivo(novoPaciente, quantidade);
+            salvarEmArquivo(novoPaciente, qtdePacientes);
             break;
         case 9:
-            imprimirConteudoDoArquivo(novoPaciente, quantidade);
+            imprimirConteudoDoArquivo(novoPaciente, qtdePacientes);
             break;
         case 0:
             printf("Saindo do sistema\n");
@@ -247,5 +315,6 @@ int main()
         }
     } while (op != 0);
     free(novoPaciente);
+    free(novoMedico);
     return 0;
 }
