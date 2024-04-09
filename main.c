@@ -423,7 +423,7 @@ int main()
     MEDICO *novoMedico = NULL;
     int qtdePacientes = 0;
     int qtdeMedicos = 0;
-    int op;
+    int op, aux_opc;
 
     do
     {
