@@ -16,8 +16,6 @@ typedef struct
     // PACIENTE *pacientes;
 } MEDICO;
 
-<<<<<<< HEAD
-=======
 typedef struct 
 {
     PACIENTE *paciente;
@@ -26,7 +24,6 @@ typedef struct
     int prioridade;
 } ATENDIMENTO;
 
->>>>>>> a70cd20090c27b37d37c2788f61b74ca2b44133b
 // Estrutura para uma lista encadeada
 typedef struct ITEM
 {
@@ -40,8 +37,6 @@ typedef struct
     int qtde;
 } LISTA;
 
-<<<<<<< HEAD
-=======
 //Inicializa a lista
 void inicializa(LISTA *l)
 {
@@ -70,7 +65,6 @@ void imprimirPaciente(void *chave)
     }
 }
 
->>>>>>> a70cd20090c27b37d37c2788f61b74ca2b44133b
 // Função para cadastrar paciente
 PACIENTE *cadastrarPaciente()
 {
@@ -97,8 +91,6 @@ PACIENTE *cadastrarPaciente()
     return novoPaciente;
 }
 
-<<<<<<< HEAD
-=======
 // Função de comparação para qsort
 int compararPacientes(const void *a, const void *b)
 {
@@ -133,7 +125,6 @@ void listarPacientes(PACIENTE *p, int quantidade)
     }
 }
 
->>>>>>> a70cd20090c27b37d37c2788f61b74ca2b44133b
 // Função para cadastrar médico
 MEDICO *cadastrarMedico()
 {
@@ -156,43 +147,6 @@ MEDICO *cadastrarMedico()
     return novoMedico;
 }
 
-<<<<<<< HEAD
-void bubbleSortPrioridadeCrescente(PACIENTE v[], int tam)
-{
-    for (int i = 0; i < tam - 1; i++)
-    {
-        for (int j = 0; j < tam - i - 1; j++)
-        {
-            if (v[j].prioridade > v[j + 1].prioridade)
-            {
-                // trocar prioridade
-                int aux = v[j].prioridade;
-                v[j].prioridade = v[j + 1].prioridade;
-                v[j + 1].prioridade = aux;
-
-                // trocar idades correspondente a prioridade
-                aux = v[j].idade;
-                v[j].idade = v[j + 1].idade;
-                v[j + 1].idade = aux;
-
-                // troca nomes correspondentes a prioridade
-                char auxc[50];
-                strcpy(auxc, v[j].nome);
-                strcpy(v[j].nome, v[j + 1].nome);
-                strcpy(v[j + 1].nome, auxc);
-            }
-        }
-    }
-}
-
-
-int main()
-{
-    PACIENTE *novoPaciente;
-    MEDICO *novoMedico;
-    int op;
-    int quant_paciente = 0;
-=======
 void imprimirMedico(void *chave)
 {
     if (chave != NULL)
@@ -307,7 +261,6 @@ int main()
     int qtdeMedicos = 0;
     int op;
 
->>>>>>> a70cd20090c27b37d37c2788f61b74ca2b44133b
     do
     {
         printf("----- SISTEMA DE PRONTO ATENDIMENTO -----\n");
@@ -331,46 +284,6 @@ int main()
             qtdePacientes++;
             break;
 
-<<<<<<< HEAD
-        switch (op)
-        {
-        case 1:
-            novoPaciente = cadastrarPaciente();
-            quant_paciente++;
-            break;
-        case 2:
-            novoMedico = cadastrarMedico();
-            break;
-        case 3:
-            printf("Lista de Pacientes: \n");
-            // Função listar pacientes
-            printf("Deseja Listar Paciente em ordem de 1-nome, 2-idade, 3-prioridade? ");
-            int aux;
-            scanf("%d", &aux);
-            switch (aux)
-            {
-            case 1: // nome
-                /* code */
-                break;
-            case 2: // idade
-                break;
-            case 3: // prioridade
-                bubbleSortPrioridadeCrescente(novoPaciente, quant_paciente);
-                for (int i = 0; i < quant_paciente; i++)
-                {
-                    printf("Prioridade: %d. Paciente: %s \n",novoPaciente->prioridade, novoPaciente->nome);
-                }
-                
-                break;
-
-            default:
-                break;
-            }
-            break;
-        case 4:
-            printf("Lista de Medicos: \n");
-            // Função para listar médicos
-=======
         case 2:
             novoMedico = realloc(novoMedico, (qtdeMedicos + 1) * sizeof(MEDICO));
             novoMedico[qtdeMedicos] = *cadastrarMedico();
@@ -383,7 +296,6 @@ int main()
         case 4:
             qsort(novoMedico, qtdeMedicos, sizeof(MEDICO), compararMedicos);
             listarMedicos(novoMedico, qtdeMedicos);
->>>>>>> a70cd20090c27b37d37c2788f61b74ca2b44133b
             break;
         case 5:
             // Realizar atendimentos
@@ -394,15 +306,12 @@ int main()
         case 7:
             // cancelar atendimentos
             break;
-<<<<<<< HEAD
-=======
         case 8:
             salvarEmArquivo(novoPaciente, qtdePacientes);
             break;
         case 9:
             imprimirConteudoDoArquivo(novoPaciente, qtdePacientes);
             break;
->>>>>>> a70cd20090c27b37d37c2788f61b74ca2b44133b
         case 0:
             printf("Saindo do sistema\n");
             exit(0);
