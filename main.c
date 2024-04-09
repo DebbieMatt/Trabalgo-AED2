@@ -65,7 +65,7 @@ void imprimirPaciente(void *chave)
     {
         PACIENTE *p = (PACIENTE*)chave;
         printf("Nome: %s\n", p->nome);
-        printf("Idade: %s\n", p->idade);
+        printf("Idade: %d\n", p->idade);
     }
 }
 
