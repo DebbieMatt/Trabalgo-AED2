@@ -46,6 +46,12 @@ void inicializa(LISTA *l)
 void inserir(LISTA *l, void *chave)
 {
     ITEM *novoItem = (ITEM*)malloc(sizeof(ITEM));
+    if (novoItem == NULL)
+    {
+        printf("Erro ao alocar memoria!\n");
+        return;
+    }
+
     novoItem->chave = chave;
     novoItem->prox = l->inicio;
     l->inicio = novoItem;
@@ -185,6 +191,113 @@ void listarMedicos(MEDICO *m, int quantidade)
     }
 }
 
+void consulta(PACIENTE *p, int qtdeP, MEDICO *m, int qtdeM, LISTA *l) 
+{
+    if (p == NULL || qtdeP == 0 || m == NULL || qtdeM == 0 || l == NULL)
+    {
+        printf("Nao ha nenhum cadastro no sistema!\n");
+        return;
+    }
+    
+    char paciente[40];
+    char medico[40];
+    char motivo[50];
+    int prioridade, opPaciente, opMedico;
+
+
+    printf("\nRealizar atendimento");
+
+    printf("Pacientes cadastrados:\n");
+    for (int i = 0; i < qtdeP; i++)
+    {
+        printf("%d - %s\n", i + 1, p[i].nome);
+    }
+    
+    printf("Informe o paciente: ");
+    scanf("%d", &opPaciente);
+    getchar();
+
+    if (opPaciente < 1 || opPaciente > qtdeP)
+    {
+        printf("Opcao invalida!\n");
+        return;
+    }
+    strcpy(paciente, p[opPaciente - 1].nome);
+    
+    //Listar médicos cadastrados
+    printf("Medicos cadastrados:\n");
+    for (int i = 0; i < qtdeM; i++)
+    {
+        printf("%d - %s\n", i + 1, m[i].nome);
+    }
+    
+    printf("Informe o medico: ");
+    scanf("%d", &opMedico);
+    getchar();
+
+    if (opMedico < 1 || opMedico > qtdeM)
+    {
+        printf("Opcao invalida!\n");
+        return;
+    }
+    strcpy(medico, m[opMedico - 1].nome);
+
+    printf("Motivo da consulta ");
+    fgets(motivo, sizeof(motivo), stdin);
+    motivo[strcspn(motivo, "\n")] = '\0';
+
+    printf("Prioridade (1 - leve, 2 - moderada, 3 - grave): ");
+    scanf("%d", &prioridade);
+    getchar();
+
+    //inicia um novo atendimento
+    ATENDIMENTO *novo = (ATENDIMENTO*)malloc(sizeof(ATENDIMENTO));
+    if (novo == NULL)
+    {
+        printf("Erro ao alocar memoria!\n");
+        return;
+    }
+    
+    novo->paciente = &p[opPaciente - 1];
+    novo->medico = &m[opMedico - 1];
+    strcpy(novo->motivo, motivo);
+    novo->prioridade = prioridade;
+
+    //insere o atendimento na lista
+    inserir(l, novo);
+
+    //exibe as informações do atendimento
+    printf("Atendimento:\n");
+    printf("Paciente: %s\n", paciente);
+    printf("Medico: %s\n", medico);
+    printf("Motivo da consulta: %s\n", motivo);
+    printf("Prioridade: %s\n", (prioridade == 1 ? "Leve" : (prioridade == 2 ? "Moderada" : "Grave")));
+}
+
+void listarAtendimentos(LISTA *l)
+{
+    if (l == NULL || l->inicio == NULL)
+    {
+        printf("Nenhum atendimento realizado!\n");
+        return;
+    }
+
+    printf("\nAtendimentos Realizados: ");
+    ITEM *atual = l->inicio;
+    while (atual != NULL)
+    {
+        ATENDIMENTO *atendimento = (ATENDIMENTO*)atual->chave;
+        if (atendimento != NULL)
+        {
+            printf("\nPaciente: %s\n", atendimento->paciente->nome);
+            printf("Medico: %s\n", atendimento->medico->nome);
+            printf("Motivo da consulta: %s\n", atendimento->motivo);
+            printf("Prioridade: %s\n", (atendimento->prioridade == 1 ? "Leve" : (atendimento->prioridade == 2 ? "Moderada" : "Grave")));
+        }
+        atual = atual->prox;
+    }
+}
+
 void salvarEmArquivo(PACIENTE *novoPaciente, int quantidade)
 {
     FILE *arq = fopen("arquivo.txt", "w"); // abri ou cria um arq txt e escreve.
@@ -227,6 +340,9 @@ void imprimirConteudoDoArquivo(PACIENTE *novoPaciente, int quantidade)
 
 int main()
 {
+    LISTA atendimentos;
+    inicializa(&atendimentos);
+    
     PACIENTE *novoPaciente = NULL;
     MEDICO *novoMedico = NULL;
     int qtdePacientes = 0;
@@ -270,10 +386,10 @@ int main()
             listarMedicos(novoMedico, qtdeMedicos);
             break;
         case 5:
-            // Realizar atendimentos
+            consulta(novoPaciente, qtdePacientes, novoMedico, qtdeMedicos, &atendimentos);
             break;
         case 6:
-            // listar atendimentos
+            listarAtendimentos(&atendimentos);
             break;
         case 7:
             // cancelar atendimentos
