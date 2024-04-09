@@ -207,7 +207,7 @@ void consulta(PACIENTE *p, int qtdeP, MEDICO *m, int qtdeM, LISTA *l)
 
     printf("\nRealizar atendimento");
 
-    printf("Pacientes cadastrados:\n");
+    printf("\nPacientes cadastrados:\n");
     for (int i = 0; i < qtdeP; i++)
     {
         printf("%d - %s\n", i + 1, p[i].nome);
@@ -434,7 +434,7 @@ int main()
         printf("4 - Listar medicos\n");
         printf("5 - Realizar atendimento\n");
         printf("6 - Listar atendimento\n");
-        printf("7 - Cancelar atendimento\n");
+        printf("7 - Terminar atendimento\n");
         printf("8 - Salvar em Arquivo\n");
         printf("9 - Ler este Arquivo\n");
         printf("10 - Ordenacao\n");
