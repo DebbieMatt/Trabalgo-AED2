@@ -6,14 +6,12 @@ typedef struct
 {
     char nome[50];
     int idade;
-    int prioridade; // 1 Azul 2 Amarelo 3 Vermelho
 } PACIENTE;
 
 typedef struct
 {
     char nome[40];
     char especialidade[50];
-    // PACIENTE *pacientes;
 } MEDICO;
 
 typedef struct 
@@ -75,17 +73,13 @@ PACIENTE *cadastrarPaciente()
         return NULL;
     }
 
-    printf("CADASTRO DE PACIENTE\n");
+    printf("\nCADASTRO DE PACIENTE\n");
     printf("Nome: ");
     fgets(novoPaciente->nome, sizeof(novoPaciente->nome), stdin);
     novoPaciente->nome[strcspn(novoPaciente->nome, "\n")] = '\0';
 
     printf("Idade: ");
     scanf("%d", &novoPaciente->idade);
-    getchar(); // Limpa o buffer
-
-    printf("Prioridade: ");
-    scanf("%d", &novoPaciente->prioridade);
     getchar(); // Limpa o buffer
 
     return novoPaciente;
@@ -117,34 +111,12 @@ void listarPacientes(PACIENTE *p, int quantidade)
         return;
     }
 
-    printf("Paciente Cadastrados:\n");
+    printf("\nPaciente Cadastrados: ");
     for (int i = 0; i < quantidade; i++)
     {
-        printf("Nome: %s\n", p[i].nome);
+        printf("\nNome: %s\n", p[i].nome);
         printf("Idade: %d\n", p[i].idade);
     }
-}
-
-// Função para cadastrar médico
-MEDICO *cadastrarMedico()
-{
-    MEDICO *novoMedico = (MEDICO *)malloc(sizeof(MEDICO)); // Alocando memória
-    if (novoMedico == NULL)
-    {
-        printf("Erro ao alocar memoria!\n");
-        return NULL;
-    }
-
-    printf("CADASTRO DE MEDICO\n");
-    printf("Nome: ");
-    fgets(novoMedico->nome, sizeof(novoMedico->nome), stdin);
-    novoMedico->nome[strcspn(novoMedico->nome, "\n")] = '\0';
-
-    printf("Especialidade: ");
-    fgets(novoMedico->especialidade, sizeof(novoMedico->especialidade), stdin);
-    novoMedico->especialidade[strcspn(novoMedico->especialidade, "\n")] = '\0';
-
-    return novoMedico;
 }
 
 void imprimirMedico(void *chave)
@@ -263,7 +235,7 @@ int main()
 
     do
     {
-        printf("----- SISTEMA DE PRONTO ATENDIMENTO -----\n");
+        printf("\nSISTEMA DE PRONTO ATENDIMENTO\n");
         printf("1 - Cadastrar paciente\n");
         printf("2 - Cadastrar medico\n");
         printf("3 - Listar pacientes\n");
