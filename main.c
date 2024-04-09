@@ -274,6 +274,82 @@ void consulta(PACIENTE *p, int qtdeP, MEDICO *m, int qtdeM, LISTA *l)
     printf("Prioridade: %s\n", (prioridade == 1 ? "Leve" : (prioridade == 2 ? "Moderada" : "Grave")));
 }
 
+void bubbleSortPrioridadeCrescente(LISTA *l)
+{
+    if (l == NULL || l->inicio == NULL)
+    {
+        printf("Lista vazia ou nao inicializada!\n");
+        return;
+    }
+
+    int trocado;
+    ITEM *atual;
+    ATENDIMENTO *atendimentoAtual;
+    void *temp;
+
+    do
+    {
+        trocado = 0;
+        atual = l->inicio;
+
+        while (atual->prox != NULL)
+        {
+            ATENDIMENTO *atendimentoAtual = (ATENDIMENTO *)atual->chave;
+            ATENDIMENTO *atendimentoProx = (ATENDIMENTO *)atual->prox->chave;
+
+            if (atendimentoAtual->prioridade > atendimentoProx->prioridade)
+            {
+                // Troca os elementos na lista
+                temp = atual->chave;
+                atual->chave = atual->prox->chave;
+                atual->prox->chave = temp;
+
+                trocado = 1;
+            }
+
+            atual = atual->prox;
+        }
+    } while (trocado);
+}
+
+void bubbleSortPrioridadeDecrescente(LISTA *l)
+{
+    if (l == NULL || l->inicio == NULL)
+    {
+        printf("Lista vazia ou nao inicializada!\n");
+        return;
+    }
+
+    int trocado;
+    ITEM *atual;
+    ATENDIMENTO *atendimentoAtual;
+    void *temp;
+
+    do
+    {
+        trocado = 0;
+        atual = l->inicio;
+
+        while (atual->prox != NULL)
+        {
+            ATENDIMENTO *atendimentoAtual = (ATENDIMENTO *)atual->chave;
+            ATENDIMENTO *atendimentoProx = (ATENDIMENTO *)atual->prox->chave;
+
+            if (atendimentoAtual->prioridade < atendimentoProx->prioridade) // Alteração aqui
+            {
+                // Troca os elementos na lista
+                temp = atual->chave;
+                atual->chave = atual->prox->chave;
+                atual->prox->chave = temp;
+
+                trocado = 1;
+            }
+
+            atual = atual->prox;
+        }
+    } while (trocado);
+}
+
 void listarAtendimentos(LISTA *l)
 {
     if (l == NULL || l->inicio == NULL)
@@ -361,6 +437,7 @@ int main()
         printf("7 - Cancelar atendimento\n");
         printf("8 - Salvar em Arquivo\n");
         printf("9 - Ler este Arquivo\n");
+        printf("10 - Ordenacao\n");
         printf("0 - Sair\n");
         scanf("%d", &op);
         getchar(); // Limpa o buffer de entrada após o scanf
@@ -399,6 +476,26 @@ int main()
             break;
         case 9:
             imprimirConteudoDoArquivo(novoPaciente, qtdePacientes);
+            break;
+        case 10:
+            printf("Digite uma opcao: \n");
+            printf("1 - Ordenar Prioridade Crescente: \n");
+            printf("2 - Ordenada Prioridade Decrescente.\n");
+
+            scanf("%d", &aux_opc);
+            switch (aux_opc)
+            {
+            case 1:
+                bubbleSortPrioridadeCrescente(&atendimentos);
+                break;
+            case 2:
+                bubbleSortPrioridadeDecrescente(&atendimentos);
+                break;
+            default:
+                break;
+            }
+            break;
+
             break;
         case 0:
             printf("Saindo do sistema\n");
