@@ -14,6 +14,14 @@ typedef struct
     char especialidade[50];
 } MEDICO;
 
+typedef struct
+{
+    PACIENTE *paciente;
+    MEDICO *medico;
+    char motivo[50];
+    int prioridade;
+} ATENDIMENTO;
+
 // Estrutura para uma lista encadeada
 typedef struct ITEM
 {
@@ -27,6 +35,40 @@ typedef struct
     int qtde;
 } LISTA;
 
+// Inicializa a lista
+void inicializa(LISTA *l)
+{
+    l->inicio = NULL;
+    l->qtde = 0;
+}
+
+// Insere um elemento na lista
+void inserir(LISTA *l, void *chave)
+{
+    ITEM *novoItem = (ITEM *)malloc(sizeof(ITEM));
+    if (novoItem == NULL)
+    {
+        printf("Erro ao alocar memoria!\n");
+        return;
+    }
+
+    novoItem->chave = chave;
+    novoItem->prox = l->inicio;
+    l->inicio = novoItem;
+    l->qtde++;
+}
+
+// Imprime os dados do paciente
+void imprimirPaciente(void *chave)
+{
+    if (chave != NULL)
+    {
+        PACIENTE *p = (PACIENTE *)chave;
+        printf("Nome: %s\n", p->nome);
+        printf("Idade: %d\n", p->idade);
+    }
+}
+
 // Função para cadastrar paciente
 PACIENTE *cadastrarPaciente()
 {
@@ -37,7 +79,7 @@ PACIENTE *cadastrarPaciente()
         return NULL;
     }
 
-    printf("CADASTRO DE PACIENTE\n");
+    printf("\nCADASTRO DE PACIENTE\n");
     printf("Nome: ");
     fgets(novoPaciente->nome, sizeof(novoPaciente->nome), stdin);
     novoPaciente->nome[strcspn(novoPaciente->nome, "\n")] = '\0';
@@ -47,6 +89,50 @@ PACIENTE *cadastrarPaciente()
     getchar(); // Limpa o buffer
 
     return novoPaciente;
+}
+
+// Função de comparação para qsort
+int compararPacientes(const void *a, const void *b)
+{
+    PACIENTE *pacienteA = (PACIENTE *)a;
+    PACIENTE *pacienteB = (PACIENTE *)b;
+
+    // Primeiro, compare os nomes
+    int nomeComparacao = strcmp(pacienteA->nome, pacienteB->nome);
+    if (nomeComparacao != 0)
+    {
+        return nomeComparacao; // Se os nomes são diferentes, retorne o resultado da comparação de nomes
+    }
+
+    // Se os nomes são iguais, compare as idades
+    return pacienteA->idade - pacienteB->idade;
+}
+
+// Função para listar pacientes cadastrados
+void listarPacientes(PACIENTE *p, int quantidade)
+{
+    if (p == NULL || quantidade == 0)
+    {
+        printf("Nenhum paciente cadastrado!\n");
+        return;
+    }
+
+    printf("\nPaciente Cadastrados: ");
+    for (int i = 0; i < quantidade; i++)
+    {
+        printf("\nNome: %s\n", p[i].nome);
+        printf("Idade: %d\n", p[i].idade);
+    }
+}
+
+void imprimirMedico(void *chave)
+{
+    if (chave != NULL)
+    {
+        MEDICO *m = (MEDICO *)chave;
+        printf("Nome: %s\n", m->nome);
+        printf("Especialidade: %s\n", m->especialidade);
+    }
 }
 
 // Função para cadastrar médico
@@ -72,34 +158,240 @@ MEDICO *cadastrarMedico()
 }
 
 // Função de comparação para qsort
-int compararPacientes(const void *a, const void *b)
+int compararMedicos(const void *a, const void *b)
 {
-    PACIENTE *pacienteA = (PACIENTE *)a;
-    PACIENTE *pacienteB = (PACIENTE *)b;
+    MEDICO *medicoA = (MEDICO *)a;
+    MEDICO *medicoB = (MEDICO *)b;
 
     // Primeiro, compare os nomes
-    int nomeComparacao = strcmp(pacienteA->nome, pacienteB->nome);
+    int nomeComparacao = strcmp(medicoA->nome, medicoB->nome);
     if (nomeComparacao != 0)
     {
         return nomeComparacao; // Se os nomes são diferentes, retorne o resultado da comparação de nomes
     }
 
-    // Se os nomes são iguais, compare as idades
-    return pacienteA->idade - pacienteB->idade;
+    // Se os nomes são iguais, compare as especialidades
+    return strcmp(medicoA->especialidade, medicoB->especialidade);
 }
 
-void salvarEmArquivo(PACIENTE *novoPaciente, int quantidade)
+// Função para listar os médicos cadastrados
+void listarMedicos(MEDICO *m, int quantidade)
 {
-    FILE *arq = fopen("arquivo.txt", "w"); // abri ou cria um arq txt e escreve.
+    if (m == NULL || quantidade == 0)
+    {
+        printf("Nenhum medico cadastrado!\n");
+        return;
+    }
+
+    printf("\nMedicos Cadastrados:");
+    for (int i = 0; i < quantidade; i++)
+    {
+        printf("\nNome: %s\n", m[i].nome);
+        printf("Especialidade: %s\n", m[i].especialidade);
+    }
+}
+
+void consulta(PACIENTE *p, int qtdeP, MEDICO *m, int qtdeM, LISTA *l)
+{
+    if (p == NULL || qtdeP == 0 || m == NULL || qtdeM == 0 || l == NULL)
+    {
+        printf("Nao ha nenhum cadastro no sistema!\n");
+        return;
+    }
+
+    char paciente[40];
+    char medico[40];
+    char motivo[50];
+    int prioridade, opPaciente, opMedico;
+
+    printf("\nRealizar atendimento");
+
+    printf("\nPacientes cadastrados:\n");
+    for (int i = 0; i < qtdeP; i++)
+    {
+        printf("%d - %s\n", i + 1, p[i].nome);
+    }
+
+    printf("Informe o paciente: ");
+    scanf("%d", &opPaciente);
+    getchar();
+
+    if (opPaciente < 1 || opPaciente > qtdeP)
+    {
+        printf("Opcao invalida!\n");
+        return;
+    }
+    strcpy(paciente, p[opPaciente - 1].nome);
+
+    // Listar médicos cadastrados
+    printf("Medicos cadastrados:\n");
+    for (int i = 0; i < qtdeM; i++)
+    {
+        printf("%d - %s\n", i + 1, m[i].nome);
+    }
+
+    printf("Informe o medico: ");
+    scanf("%d", &opMedico);
+    getchar();
+
+    if (opMedico < 1 || opMedico > qtdeM)
+    {
+        printf("Opcao invalida!\n");
+        return;
+    }
+    strcpy(medico, m[opMedico - 1].nome);
+
+    printf("Motivo da consulta ");
+    fgets(motivo, sizeof(motivo), stdin);
+    motivo[strcspn(motivo, "\n")] = '\0';
+
+    printf("Prioridade (1 - leve, 2 - moderada, 3 - grave): ");
+    scanf("%d", &prioridade);
+    getchar();
+
+    // inicia um novo atendimento
+    ATENDIMENTO *novo = (ATENDIMENTO *)malloc(sizeof(ATENDIMENTO));
+    if (novo == NULL)
+    {
+        printf("Erro ao alocar memoria!\n");
+        return;
+    }
+
+    novo->paciente = &p[opPaciente - 1];
+    novo->medico = &m[opMedico - 1];
+    strcpy(novo->motivo, motivo);
+    novo->prioridade = prioridade;
+
+    // insere o atendimento na lista
+    inserir(l, novo);
+
+    // exibe as informações do atendimento
+    printf("Atendimento:\n");
+    printf("Paciente: %s\n", paciente);
+    printf("Medico: %s\n", medico);
+    printf("Motivo da consulta: %s\n", motivo);
+    printf("Prioridade: %s\n", (prioridade == 1 ? "Leve" : (prioridade == 2 ? "Moderada" : "Grave")));
+}
+
+void bubbleSortPrioridadeCrescente(LISTA *l)
+{
+    if (l == NULL || l->inicio == NULL)
+    {
+        printf("Lista vazia ou nao inicializada!\n");
+        return;
+    }
+
+    int trocado;
+    ITEM *atual;
+    ATENDIMENTO *atendimentoAtual;
+    void *temp;
+
+    do
+    {
+        trocado = 0;
+        atual = l->inicio;
+
+        while (atual->prox != NULL)
+        {
+            ATENDIMENTO *atendimentoAtual = (ATENDIMENTO *)atual->chave;
+            ATENDIMENTO *atendimentoProx = (ATENDIMENTO *)atual->prox->chave;
+
+            if (atendimentoAtual->prioridade > atendimentoProx->prioridade)
+            {
+                // Troca os elementos na lista
+                temp = atual->chave;
+                atual->chave = atual->prox->chave;
+                atual->prox->chave = temp;
+
+                trocado = 1;
+            }
+
+            atual = atual->prox;
+        }
+    } while (trocado);
+}
+
+void bubbleSortPrioridadeDecrescente(LISTA *l)
+{
+    if (l == NULL || l->inicio == NULL)
+    {
+        printf("Lista vazia ou nao inicializada!\n");
+        return;
+    }
+
+    int trocado;
+    ITEM *atual;
+    ATENDIMENTO *atendimentoAtual;
+    void *temp;
+
+    do
+    {
+        trocado = 0;
+        atual = l->inicio;
+
+        while (atual->prox != NULL)
+        {
+            ATENDIMENTO *atendimentoAtual = (ATENDIMENTO *)atual->chave;
+            ATENDIMENTO *atendimentoProx = (ATENDIMENTO *)atual->prox->chave;
+
+            if (atendimentoAtual->prioridade < atendimentoProx->prioridade) // Alteração aqui
+            {
+                // Troca os elementos na lista
+                temp = atual->chave;
+                atual->chave = atual->prox->chave;
+                atual->prox->chave = temp;
+
+                trocado = 1;
+            }
+
+            atual = atual->prox;
+        }
+    } while (trocado);
+}
+
+void listarAtendimentos(LISTA *l)
+{
+    if (l == NULL || l->inicio == NULL)
+    {
+        printf("Nenhum atendimento realizado!\n");
+        return;
+    }
+
+    printf("\nAtendimentos Realizados: ");
+    ITEM *atual = l->inicio;
+    while (atual != NULL)
+    {
+        ATENDIMENTO *atendimento = (ATENDIMENTO *)atual->chave;
+        if (atendimento != NULL)
+        {
+            printf("\nPaciente: %s\n", atendimento->paciente->nome);
+            printf("Medico: %s\n", atendimento->medico->nome);
+            printf("Motivo da consulta: %s\n", atendimento->motivo);
+            printf("Prioridade: %s\n", (atendimento->prioridade == 1 ? "Leve" : (atendimento->prioridade == 2 ? "Moderada" : "Grave")));
+        }
+        atual = atual->prox;
+    }
+}
+
+void salvarAtendimentosEmArquivo(LISTA *atendimentos)
+{
+    FILE *arq = fopen("atendimentos.txt", "w"); // abre ou cria um arquivo txt para escrita.
 
     if (arq)
     {
-        for (int i = 0; i < quantidade; i++)
+        ITEM *atual = atendimentos->inicio;
+        while (atual != NULL)
         {
-            fprintf(arq, "Paciente: %s ", novoPaciente[i].nome);
-            fprintf(arq, "Idade: %d\n ", novoPaciente[i].idade);
+            ATENDIMENTO *atendimento = (ATENDIMENTO *)atual->chave;
+            fprintf(arq, "Paciente: %s\n", atendimento->paciente->nome);
+            fprintf(arq, "Idade: %d\n", atendimento->paciente->idade);
+            fprintf(arq, "Medico: %s\n", atendimento->medico->nome);
+            fprintf(arq, "Especialidade: %s\n", atendimento->medico->especialidade);
+            fprintf(arq, "Motivo: %s\n", atendimento->motivo);
+            fprintf(arq, "Prioridade: %d\n\n", atendimento->prioridade);
+            atual = atual->prox;
         }
-        fclose(arq); // fecha o arq.
+        fclose(arq); // fecha o arquivo.
     }
     else
     {
@@ -130,72 +422,97 @@ void imprimirConteudoDoArquivo(PACIENTE *novoPaciente, int quantidade)
 
 int main()
 {
+    LISTA atendimentos;
+    inicializa(&atendimentos);
+
     PACIENTE *novoPaciente = NULL;
-    int quantidade = 0;
-    MEDICO *novoMedico;
-    int op;
+    MEDICO *novoMedico = NULL;
+    int qtdePacientes = 0;
+    int qtdeMedicos = 0;
+    int op, aux_opc;
 
     do
     {
-        printf("----- SISTEMA DE PRONTO ATENDIMENTO -----\n");
+        printf("\nSISTEMA DE PRONTO ATENDIMENTO\n");
         printf("1 - Cadastrar paciente\n");
         printf("2 - Cadastrar medico\n");
         printf("3 - Listar pacientes\n");
         printf("4 - Listar medicos\n");
         printf("5 - Realizar atendimento\n");
         printf("6 - Listar atendimento\n");
-        printf("7 - Cancelar atendimento\n");
+        printf("7 - Terminar atendimento\n");
         printf("8 - Salvar em Arquivo\n");
         printf("9 - Ler este Arquivo\n");
+        printf("10 - Ordenacao\n");
         printf("0 - Sair\n");
         scanf("%d", &op);
         getchar(); // Limpa o buffer de entrada após o scanf
         switch (op)
         {
         case 1:
-            novoPaciente = realloc(novoPaciente, (quantidade + 1) * sizeof(PACIENTE));
-            novoPaciente[quantidade] = *cadastrarPaciente();
-            quantidade++;
+            novoPaciente = realloc(novoPaciente, (qtdePacientes + 1) * sizeof(PACIENTE));
+            novoPaciente[qtdePacientes] = *cadastrarPaciente();
+            qtdePacientes++; // CORRIGIR
             break;
 
         case 2:
-            novoMedico = cadastrarMedico();
-            quantidade++;
+            novoMedico = realloc(novoMedico, (qtdeMedicos + 1) * sizeof(MEDICO));
+            novoMedico[qtdeMedicos] = *cadastrarMedico();
+            qtdeMedicos++; // CORRIGIR
             break;
+
         case 3:
-            qsort(novoPaciente, quantidade, sizeof(PACIENTE), compararPacientes);
-            for (int i = 0; i < quantidade; i++)
-            {
-                printf("Nome: %s, Idade: %d\n", novoPaciente[i].nome, novoPaciente[i].idade);
-            }
+            qsort(novoPaciente, qtdePacientes, sizeof(PACIENTE), compararPacientes);
+            listarPacientes(novoPaciente, qtdePacientes);
             break;
         case 4:
-            printf("Lista de Medicos: \n");
-            // Função para listar médicos
+            qsort(novoMedico, qtdeMedicos, sizeof(MEDICO), compararMedicos);
+            listarMedicos(novoMedico, qtdeMedicos);
             break;
         case 5:
-            // Realizar atendimentos
+            consulta(novoPaciente, qtdePacientes, novoMedico, qtdeMedicos, &atendimentos);
             break;
         case 6:
-            // listar atendimentos
+            listarAtendimentos(&atendimentos);
             break;
         case 7:
             // cancelar atendimentos
             break;
         case 8:
-            salvarEmArquivo(novoPaciente, quantidade);
+            salvarAtendimentosEmArquivo(&atendimentos);
             break;
         case 9:
-            imprimirConteudoDoArquivo(novoPaciente, quantidade);
+            imprimirConteudoDoArquivo(novoPaciente, qtdePacientes);
+            break;
+        case 10:
+            printf("Digite uma opcao: \n");
+            printf("1 - Ordenar Prioridade Crescente: \n");
+            printf("2 - Ordenada Prioridade Decrescente.\n");
+
+            scanf("%d", &aux_opc);
+            switch (aux_opc)
+            {
+            case 1:
+                bubbleSortPrioridadeCrescente(&atendimentos);
+                break;
+            case 2:
+                bubbleSortPrioridadeDecrescente(&atendimentos);
+                break;
+            default:
+                break;
+            }
+            break;
+
             break;
         case 0:
             printf("Saindo do sistema\n");
-            exit(0);
+            break;
         default:
             printf("Opcao invalida!\n");
             break;
         }
     } while (op != 0);
     free(novoPaciente);
+    free(novoMedico);
     return 0;
 }
