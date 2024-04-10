@@ -202,6 +202,7 @@ void consulta(PACIENTE *p, int qtdeP, MEDICO *m, int qtdeM, LISTA *l)
     char paciente[40];
     char medico[40];
     char motivo[50];
+    char especialidade[50];
     int prioridade, opPaciente, opMedico;
 
     printf("\nRealizar atendimento");
@@ -227,7 +228,7 @@ void consulta(PACIENTE *p, int qtdeP, MEDICO *m, int qtdeM, LISTA *l)
     printf("Medicos cadastrados:\n");
     for (int i = 0; i < qtdeM; i++)
     {
-        printf("%d - %s\n", i + 1, m[i].nome);
+        printf("%d - %s - %s\n", i + 1, m[i].nome, m[i].especialidade);
     }
 
     printf("Informe o medico: ");
@@ -268,7 +269,7 @@ void consulta(PACIENTE *p, int qtdeP, MEDICO *m, int qtdeM, LISTA *l)
     // exibe as informações do atendimento
     printf("Atendimento:\n");
     printf("Paciente: %s\n", paciente);
-    printf("Medico: %s\n", medico);
+    printf("Medico: %s %s\n", medico, especialidade);
     printf("Motivo da consulta: %s\n", motivo);
     printf("Prioridade: %s\n", (prioridade == 1 ? "Leve" : (prioridade == 2 ? "Moderada" : "Grave")));
 }
@@ -365,7 +366,8 @@ void listarAtendimentos(LISTA *l)
         if (atendimento != NULL)
         {
             printf("\nPaciente: %s\n", atendimento->paciente->nome);
-            printf("Medico: %s\n", atendimento->medico->nome);
+            printf("Medico: %s\t", atendimento->medico->nome);
+            printf("Especialidade: %s\n", atendimento->medico->especialidade);
             printf("Motivo da consulta: %s\n", atendimento->motivo);
             printf("Prioridade: %s\n", (atendimento->prioridade == 1 ? "Leve" : (atendimento->prioridade == 2 ? "Moderada" : "Grave")));
         }
@@ -401,7 +403,7 @@ void salvarAtendimentosEmArquivo(LISTA *atendimentos)
 
 void imprimirConteudoDoArquivo(PACIENTE *novoPaciente, int quantidade)
 {
-    FILE *arq = fopen("arquivo.txt", "r"); // Abre o arquivo em modo de leitura
+    FILE *arq = fopen("atendimentos.txt", "r"); // Abre o arquivo em modo de leitura
 
     if (arq == NULL)
     {
