@@ -462,6 +462,47 @@ void alterarMedicoAtendimento(LISTA *atendimentos, MEDICO *medicos, int qtdeMedi
     printf("O médico do atendimento foi alterado com sucesso!\n");
 }
 
+void encerrarConsulta(LISTA *atendimentos)
+{
+    int id;
+    printf("Digite o ID do atendimento que deseja encerrar: ");
+    scanf("%d", &id);
+    getchar(); // Limpa o buffer
+
+    if (id < 1 || id > atendimentos->qtde)
+    {
+        printf("ID inválido!\n");
+        return;
+    }
+
+    // Encontre o atendimento correspondente na lista
+    ITEM *atual = atendimentos->inicio;
+    ITEM *anterior = NULL;
+    for (int i = 1; i < id; i++)
+    {
+        anterior = atual;
+        atual = atual->prox;
+    }
+
+    // Remova o atendimento da lista
+    if (anterior == NULL)
+    {
+        atendimentos->inicio = atual->prox;
+    }
+    else
+    {
+        anterior->prox = atual->prox;
+    }
+
+    // Libere a memória alocada para o atendimento
+    free(atual->chave);
+    free(atual);
+
+    atendimentos->qtde--;
+
+    printf("Atendimento encerrado com sucesso!\n");
+}
+
 void salvarAtendimentosEmArquivo(LISTA *atendimentos)
 {
     FILE *arq = fopen("atendimentos.txt", "w"); // abre ou cria um arquivo txt para escrita.
@@ -566,7 +607,7 @@ int main()
             listarAtendimentos(&atendimentos);
             break;
         case 7:
-            // cancelar atendimentos
+            encerrarConsulta(&atendimentos);
             break;
         case 8:
             salvarAtendimentosEmArquivo(&atendimentos);
