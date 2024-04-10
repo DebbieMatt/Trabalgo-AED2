@@ -375,6 +375,93 @@ void listarAtendimentos(LISTA *l)
     }
 }
 
+void editarAtendimento(LISTA *atendimentos)
+{
+    int id;
+    printf("Digite o ID do atendimento que deseja editar: ");
+    scanf("%d", &id);
+    getchar(); // Limpa o buffer
+
+    if (id < 1 || id > atendimentos->qtde)
+    {
+        printf("ID inválido!\n");
+        return;
+    }
+
+    // Encontre o atendimento correspondente na lista
+    ITEM *atual = atendimentos->inicio;
+    for (int i = 1; i < id; i++)
+    {
+        atual = atual->prox;
+    }
+
+    ATENDIMENTO *atendimento = (ATENDIMENTO *)atual->chave;
+
+    printf("Motivo atual: %s\n", atendimento->motivo);
+    printf("Digite o novo motivo: ");
+    fgets(atendimento->motivo, sizeof(atendimento->motivo), stdin);
+    atendimento->motivo[strcspn(atendimento->motivo, "\n")] = '\0';
+
+    printf("Prioridade atual: %d\n", atendimento->prioridade);
+    printf("Digite a nova prioridade: ");
+    scanf("%d", &atendimento->prioridade);
+    getchar(); // Limpa o buffer
+}
+
+void alterarMedicoAtendimento(LISTA *atendimentos, MEDICO *medicos, int qtdeMedicos)
+{
+    // Exibe todos os atendimentos para o usuário escolher
+    printf("Atendimentos:\n");
+    ITEM *atual = atendimentos->inicio;
+    for (int i = 1; i <= atendimentos->qtde; i++)
+    {
+        ATENDIMENTO *atendimento = (ATENDIMENTO *)atual->chave;
+        printf("%d - Paciente: %s, Médico: %s\n", i, atendimento->paciente->nome, atendimento->medico->nome);
+        atual = atual->prox;
+    }
+
+    printf("Digite o número do atendimento que deseja alterar o médico: ");
+    int id;
+    scanf("%d", &id);
+    getchar(); // Limpa o buffer
+
+    if (id < 1 || id > atendimentos->qtde)
+    {
+        printf("Número de atendimento inválido!\n");
+        return;
+    }
+
+    // Encontre o atendimento correspondente na lista
+    atual = atendimentos->inicio;
+    for (int i = 1; i < id; i++)
+    {
+        atual = atual->prox;
+    }
+
+    ATENDIMENTO *atendimento = (ATENDIMENTO *)atual->chave;
+
+    // Exibe todos os médicos para o usuário escolher
+    printf("Médicos:\n");
+    for (int i = 0; i < qtdeMedicos; i++)
+    {
+        printf("%d - Nome: %s, Especialidade: %s\n", i + 1, medicos[i].nome, medicos[i].especialidade);
+    }
+
+    printf("Digite o número do novo médico: ");
+    int idMedico;
+    scanf("%d", &idMedico);
+    getchar(); // Limpa o buffer
+
+    if (idMedico < 1 || idMedico > qtdeMedicos)
+    {
+        printf("Número de médico inválido!\n");
+        return;
+    }
+
+    atendimento->medico = &medicos[idMedico - 1];
+    printf("O médico do atendimento foi alterado com sucesso!\n");
+}
+
 void salvarAtendimentosEmArquivo(LISTA *atendimentos)
 {
     FILE *arq = fopen("atendimentos.txt", "w"); // abre ou cria um arquivo txt para escrita.
@@ -431,7 +518,7 @@ int main()
     MEDICO *novoMedico = NULL;
     int qtdePacientes = 0;
     int qtdeMedicos = 0;
-    int op, aux_opc;
+    int op, aux_opc, aux_opc_edit;
 
     do
     {
@@ -445,7 +532,8 @@ int main()
         printf("7 - Terminar atendimento\n");
         printf("8 - Salvar em Arquivo\n");
         printf("9 - Ler este Arquivo\n");
-        printf("10 - Ordenacao\n");
+        printf("10 - Editar dados de atendimento\n");
+        printf("11 - Ordenacao\n");
         printf("0 - Sair\n");
         scanf("%d", &op);
         getchar(); // Limpa o buffer de entrada após o scanf
@@ -487,6 +575,25 @@ int main()
             imprimirConteudoDoArquivo(novoPaciente, qtdePacientes);
             break;
         case 10:
+            printf("\nQual destes tipos de dados vc quer alterar:\n");
+            printf("1 - Editar Motivo da Consulta e Prioridade.\n");
+            printf("2 - Editar Consulta já agendado com médico.\n");
+            scanf("%d", &aux_opc_edit);
+            switch (aux_opc_edit)
+            {
+            case 1:
+                editarAtendimento(&atendimentos);
+                break;
+            case 2:
+                alterarMedicoAtendimento(&atendimentos, novoMedico, qtdeMedicos);
+                break;
+            default:
+                printf("Opcao invalida.");
+                break;
+            }
+
+            break;
+        case 11:
             printf("Digite uma opcao: \n");
             printf("1 - Ordenar Prioridade Crescente: \n");
             printf("2 - Ordenada Prioridade Decrescente.\n");
