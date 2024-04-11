@@ -535,7 +535,7 @@ void salvarAtendimentosEmArquivo(LISTA *atendimentos)
     }
 }
 
-void imprimirConteudoDoArquivo(PACIENTE *novoPaciente, int quantidade)
+void imprimirConteudoDoArquivo(PACIENTE *novoPaciente)
 {
     FILE *arq = fopen("atendimentos.txt", "r"); // Abre o arquivo em modo de leitura
 
@@ -644,7 +644,7 @@ int main()
             case 3:
                 encerrarConsulta(&atendimentos);
                 break;
-            case 4:
+            case 4://ALTERAR
                 printf("\nQual destes tipos de dados vc quer alterar:\n");
                 printf("1 - Editar Motivo da Consulta e Prioridade.\n");
                 printf("2 - Editar Consulta já agendado com médico.\n");
@@ -667,7 +667,7 @@ int main()
                 break;
             }
             break;
-        case 4:
+        case 4: //ARQUIVOS
             printf("1 - Salvar em Arquivo\n");
             printf("2 - Ler este Arquivo\n");
             printf("Digite uma opcao: ");
@@ -679,14 +679,14 @@ int main()
                 salvarAtendimentosEmArquivo(&atendimentos);
                 break;
             case 2:
-                imprimirConteudoDoArquivo(novoPaciente, qtdePacientes);
+                imprimirConteudoDoArquivo(novoPaciente);
                 break;
             default:
                 printf("Opcao invalida\n");
                 break;
             }
             break;
-        case 5:
+        case 5://ordenacao
             printf("1 - Ordenar por Prioridade Crescente\n");
             printf("2 - Ordenada por Prioridade Decrescente.\n");
             printf("3 - Ordenar por Motivo alfabeticamente.\n");
