@@ -358,7 +358,7 @@ void listarAtendimentos(LISTA *l)
         return;
     }
 
-    printf("\nAtendimentos Realizados: ");
+    printf("\nAtendimentos Cadastrados: ");
     ITEM *atual = l->inicio;
     while (atual != NULL)
     {
