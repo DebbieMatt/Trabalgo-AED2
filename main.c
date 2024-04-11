@@ -365,11 +365,14 @@ void listarAtendimentos(LISTA *l)
         ATENDIMENTO *atendimento = (ATENDIMENTO *)atual->chave;
         if (atendimento != NULL)
         {
+            int i = 1;
+            printf("\nAtendimento : %d", i);
             printf("\nPaciente: %s\n", atendimento->paciente->nome);
             printf("Medico: %s\t", atendimento->medico->nome);
             printf("Especialidade: %s\n", atendimento->medico->especialidade);
             printf("Motivo da consulta: %s\n", atendimento->motivo);
             printf("Prioridade: %s\n", (atendimento->prioridade == 1 ? "Leve" : (atendimento->prioridade == 2 ? "Moderada" : "Grave")));
+            i++;
         }
         atual = atual->prox;
     }
@@ -629,7 +632,7 @@ int main()
         switch (op)
         {
         case 1: // CADASTRO
-            printf("1 - Cadastrar paciente\n");
+            printf("\n1 - Cadastrar paciente\n");
             printf("2 - Cadastrar medico\n");
             printf("Digite uma opcao: ");
             scanf("%d", &aux_opc);
@@ -652,7 +655,7 @@ int main()
             }
             break;
         case 2: // LISTAGEM
-            printf("1 - Listar Paciente\n");
+            printf("\n1 - Listar Paciente\n");
             printf("2 - Listar Medico\n");
             printf("Digite uma opcao: ");
             scanf("%d", &aux_opc);
@@ -674,7 +677,7 @@ int main()
             break;
 
         case 3: // GERENCIAR ATENDIMENTOS
-            printf("1 - Realizar atendimento\n");
+            printf("\n1 - Realizar atendimento\n");
             printf("2 - Listar atendimento\n");
             printf("3 - Finalizar atendimento\n");
             printf("4 - Editar dados de atendimento\n");
@@ -716,7 +719,7 @@ int main()
             }
             break;
         case 4: // ARQUIVOS
-            printf("1 - Salvar em Arquivo\n");
+            printf("\n1 - Salvar em Arquivo\n");
             printf("2 - Ler este Arquivo\n");
             printf("Digite uma opcao: ");
             scanf("%d", &aux_opc);
@@ -735,7 +738,7 @@ int main()
             }
             break;
         case 5: // ordenacao
-            printf("1 - Ordenar por Prioridade Crescente\n");
+            printf("\n1 - Ordenar por Prioridade Crescente\n");
             printf("2 - Ordenada por Prioridade Decrescente.\n");
             printf("3 - Ordenar por Motivo alfabeticamente.\n");
             printf("Digite uma opcao: ");
@@ -749,7 +752,7 @@ int main()
                 bubbleSortPrioridadeDecrescente(&atendimentos);
                 break;
             case 3:
-                // quickSortMotivo(&atendimentos, );
+                
                 break;
             default:
                 printf("Opcao invalida.\n");
@@ -758,7 +761,7 @@ int main()
             listarAtendimentos(&atendimentos);
             break;
         case 6:
-            printf("1 - Busca sequencial por prioridade\n");
+            printf("\n1 - Busca sequencial por prioridade\n");
             printf("2 - Busca sequencial por motivo da consulta\n");
             printf("Escolha uma opcao: ");
             scanf("%d", &aux_opc);
@@ -766,7 +769,7 @@ int main()
             switch (aux_opc)
             {
             case 1:
-                printf("Digite a prioridade buscada: ");
+                printf("\nDigite a prioridade buscada: ");
                 scanf("%d", &aux_opc_edit); // vou usar a msm variavel p/ economizar
                 ITEM *auxil;
                 auxil = buscaSequencialPrioridade(&atendimentos, aux_opc_edit);
@@ -782,7 +785,7 @@ int main()
             case 2:
                 //busca sequencial pelo motivo da consulta
                 getchar();
-                printf("Digite o motivo da consulta a ser buscado: ");
+                printf("\nDigite o motivo da consulta a ser buscado: ");
                 char motivo[50];
                 fgets(motivo, sizeof(motivo), stdin);
                 motivo[strcspn(motivo, "\n")] = '\0';
