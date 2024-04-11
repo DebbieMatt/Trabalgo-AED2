@@ -22,6 +22,38 @@ typedef struct
     int semestre;
 } ALUNOS;
 
+int particao(ALUNOS vet[], int inicio, int fim) {
+    ALUNOS pivo = vet[(inicio + fim) / 2];
+    int a = inicio - 1;
+    int b = fim + 1;
+
+    while (1) {
+        do {
+            a++;
+        } while (strcmp(vet[a].nome, pivo.nome) < 0);
+
+        do {
+            b--;
+        } while (strcmp(vet[b].nome, pivo.nome) > 0);
+
+        if (a >= b)
+            return b;
+
+        // Troca os elementos
+        ALUNOS temp = vet[a];
+        vet[a] = vet[b];
+        vet[b] = temp;
+    }
+}
+
+void quickSort(ALUNOS vet[], int inicio, int fim) {
+    if (inicio < fim) {
+        int meio = particao(vet, inicio, fim);
+        quickSort(vet, inicio, meio);
+        quickSort(vet, meio + 1, fim);
+    }
+}
+
 void bubbleSortIdadeDecrescente(ALUNOS v[], int tam)
 {
     for (int i = 0; i < tam - 1; i++)
@@ -233,6 +265,7 @@ int main(void)
         printf("3 - Listar por idade ou semestre em ordem crescente\n");
         printf("4 - Listar por idade ou semestre em ordem decrescente\n");
         printf("5 - Excluir um item\n");
+        printf("6 - Ordenar quick por nome: ");
 
         scanf("%d", &opc);
 
@@ -301,6 +334,10 @@ int main(void)
             {
                 printf("indice invalido\n");
             }
+            break;
+        case 6:
+            quickSort(FAENG, 0, iTamanho - 1);
+            exibir(FAENG, iTamanho);
             break;
         default:
             printf("Opcao invalida\n");
