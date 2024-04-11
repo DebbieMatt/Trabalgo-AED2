@@ -58,17 +58,6 @@ void inserir(LISTA *l, void *chave)
     l->qtde++;
 }
 
-// Imprime os dados do paciente
-void imprimirPaciente(void *chave)
-{
-    if (chave != NULL)
-    {
-        PACIENTE *p = (PACIENTE *)chave;
-        printf("Nome: %s\n", p->nome);
-        printf("Idade: %d\n", p->idade);
-    }
-}
-
 // Função para cadastrar paciente
 PACIENTE *cadastrarPaciente()
 {
@@ -122,16 +111,6 @@ void listarPacientes(PACIENTE *p, int quantidade)
     {
         printf("\nNome: %s\n", p[i].nome);
         printf("Idade: %d\n", p[i].idade);
-    }
-}
-
-void imprimirMedico(void *chave)
-{
-    if (chave != NULL)
-    {
-        MEDICO *m = (MEDICO *)chave;
-        printf("Nome: %s\n", m->nome);
-        printf("Especialidade: %s\n", m->especialidade);
     }
 }
 
@@ -312,6 +291,44 @@ void bubbleSortPrioridadeCrescente(LISTA *l)
     } while (trocado);
 }
 
+void bubbleSortMotivo(LISTA *l)
+{
+    if (l == NULL || l->inicio == NULL)
+    {
+        printf("Lista vazia ou nao inicializada!\n");
+        return;
+    }
+
+    int trocado;
+    ITEM *atual;
+    void *temp;
+
+    do
+    {
+        trocado = 0;
+        atual = l->inicio;
+
+        while (atual->prox != NULL)
+        {
+            ATENDIMENTO *atendimentoAtual = (ATENDIMENTO *)atual->chave;
+            ATENDIMENTO *atendimentoProx = (ATENDIMENTO *)atual->prox->chave;
+
+            if (strcmp(atendimentoAtual->motivo, atendimentoProx->motivo) > 0)
+            {
+                // Troca os elementos na lista
+                temp = atual->chave;
+                atual->chave = atual->prox->chave;
+                atual->prox->chave = temp;
+
+                trocado = 1;
+            }
+
+            atual = atual->prox;
+        }
+    } while (trocado);
+}
+
+
 void bubbleSortPrioridadeDecrescente(LISTA *l)
 {
     if (l == NULL || l->inicio == NULL)
@@ -365,14 +382,11 @@ void listarAtendimentos(LISTA *l)
         ATENDIMENTO *atendimento = (ATENDIMENTO *)atual->chave;
         if (atendimento != NULL)
         {
-            int i = 1;
-            printf("\nAtendimento : %d", i);
             printf("\nPaciente: %s\n", atendimento->paciente->nome);
             printf("Medico: %s\t", atendimento->medico->nome);
             printf("Especialidade: %s\n", atendimento->medico->especialidade);
             printf("Motivo da consulta: %s\n", atendimento->motivo);
             printf("Prioridade: %s\n", (atendimento->prioridade == 1 ? "Leve" : (atendimento->prioridade == 2 ? "Moderada" : "Grave")));
-            i++;
         }
         atual = atual->prox;
     }
@@ -605,6 +619,8 @@ ITEM *buscaSequencialMotivo(LISTA *atendimento, const char *motivo)
     return NULL;
 }
 
+
+
 int main()
 {
     LISTA atendimentos;
@@ -752,7 +768,7 @@ int main()
                 bubbleSortPrioridadeDecrescente(&atendimentos);
                 break;
             case 3:
-                
+                bubbleSortMotivo(&atendimentos);
                 break;
             default:
                 printf("Opcao invalida.\n");
