@@ -58,17 +58,6 @@ void inserir(LISTA *l, void *chave)
     l->qtde++;
 }
 
-// Imprime os dados do paciente
-void imprimirPaciente(void *chave)
-{
-    if (chave != NULL)
-    {
-        PACIENTE *p = (PACIENTE *)chave;
-        printf("Nome: %s\n", p->nome);
-        printf("Idade: %d\n", p->idade);
-    }
-}
-
 // Função para cadastrar paciente
 PACIENTE *cadastrarPaciente()
 {
@@ -123,16 +112,6 @@ void listarPacientes(PACIENTE *p, int quantidade)
         printf("Nome: %s\n", p[i].nome);
         printf("Idade: %d\n", p[i].idade);
         printf("\n");
-    }
-}
-
-void imprimirMedico(void *chave)
-{
-    if (chave != NULL)
-    {
-        MEDICO *m = (MEDICO *)chave;
-        printf("Nome: %s\n", m->nome);
-        printf("Especialidade: %s\n", m->especialidade);
     }
 }
 
