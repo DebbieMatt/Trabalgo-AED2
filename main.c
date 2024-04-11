@@ -579,6 +579,29 @@ ITEM *buscaSequencialPrioridade(LISTA *atendimentos, int prioridade)
     return NULL;
 }
 
+ITEM *buscaSequencialMotivo(LISTA *atendimento, const char *motivo) 
+{
+    if (atendimento == NULL || atendimento->inicio == NULL)
+    {
+        printf("Nenhum atendimento cadastrado!\n");
+        return NULL;
+    }
+    
+    ITEM *atual = atendimento->inicio;
+    while (atual != NULL)
+    {
+        ATENDIMENTO *atendimento = (ATENDIMENTO *)atual->chave;
+        if (strcmp(atendimento->motivo, motivo) == 0)
+        {
+            return atual;
+        }
+        atual = atual->prox;
+    }
+    
+    printf("Atendimento com o motivo '%s' nao encontrado no sistema!\n", motivo);
+    return NULL;
+}
+
 int main()
 {
     LISTA atendimentos;
@@ -757,7 +780,23 @@ int main()
                 printf("Prioridade: %s\n", (atendimento->prioridade == 1 ? "Leve" : (atendimento->prioridade == 2 ? "Moderada" : "Grave")));
                 break;
             case 2:
-                // buscaSequencialMotivo();
+                //busca sequencial pelo motivo da consulta
+                getchar();
+                printf("Digite o motivo da consulta a ser buscado: ");
+                char motivo[50];
+                fgets(motivo, sizeof(motivo), stdin);
+                motivo[strcspn(motivo, "\n")] = '\0';
+                auxil = buscaSequencialMotivo(&atendimentos, motivo);
+                if (auxil != NULL)
+                {
+                    ATENDIMENTO *atendimento = (ATENDIMENTO *)auxil->chave;
+                    printf("Atendimento encontrado por motivo: \n");
+                    printf("\nPaciente: %s\n", atendimento->paciente->nome);
+                    printf("Medico: %s\t", atendimento->medico->nome);
+                    printf("Especialidade: %s\n", atendimento->medico->especialidade);
+                    printf("Motivo da consulta: %s\n", atendimento->motivo);
+                    printf("Prioridade: %s\n", (atendimento->prioridade == 1 ? "Leve" : (atendimento->prioridade == 2 ? "Moderada" : "Grave")));
+                }
                 break;
             default:
                 break;
