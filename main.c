@@ -106,11 +106,12 @@ void listarPacientes(PACIENTE *p, int quantidade)
         return;
     }
 
-    printf("\nPaciente Cadastrados: ");
+    printf("\nPacientes Cadastrados: \n");
     for (int i = 0; i < quantidade; i++)
     {
-        printf("\nNome: %s\n", p[i].nome);
+        printf("Nome: %s\n", p[i].nome);
         printf("Idade: %d\n", p[i].idade);
+        printf("\n");
     }
 }
 
@@ -124,7 +125,7 @@ MEDICO *cadastrarMedico()
         return NULL;
     }
 
-    printf("CADASTRO DE MEDICO\n");
+    printf("\nCADASTRO DE MEDICO\n");
     printf("Nome: ");
     fgets(novoMedico->nome, sizeof(novoMedico->nome), stdin);
     novoMedico->nome[strcspn(novoMedico->nome, "\n")] = '\0';
@@ -162,10 +163,10 @@ void listarMedicos(MEDICO *m, int quantidade)
         return;
     }
 
-    printf("\nMedicos Cadastrados:");
+    printf("\nMedicos Cadastrados:\n");
     for (int i = 0; i < quantidade; i++)
     {
-        printf("\nNome: %s\n", m[i].nome);
+        printf("Nome: %s\n", m[i].nome);
         printf("Especialidade: %s\n", m[i].especialidade);
     }
 }
@@ -184,7 +185,7 @@ void consulta(PACIENTE *p, int qtdeP, MEDICO *m, int qtdeM, LISTA *l)
     char especialidade[50];
     int prioridade, opPaciente, opMedico;
 
-    printf("\nRealizar atendimento");
+    printf("\nRealizar atendimento\n");
 
     printf("\nPacientes cadastrados:\n");
     for (int i = 0; i < qtdeP; i++)
@@ -221,15 +222,15 @@ void consulta(PACIENTE *p, int qtdeP, MEDICO *m, int qtdeM, LISTA *l)
     }
     strcpy(medico, m[opMedico - 1].nome);
 
-    printf("Motivo da consulta ");
+    printf("Motivo da consulta: ");
     fgets(motivo, sizeof(motivo), stdin);
     motivo[strcspn(motivo, "\n")] = '\0';
 
-    printf("Prioridade (1 - leve, 2 - moderada, 3 - grave): ");
+    printf("Prioridade (1 - Leve, 2 - Moderada, 3 - Grave): ");
     scanf("%d", &prioridade);
     getchar();
 
-    // inicia um novo atendimento
+    //inicia um novo atendimento
     ATENDIMENTO *novo = (ATENDIMENTO *)malloc(sizeof(ATENDIMENTO));
     if (novo == NULL)
     {
@@ -237,12 +238,31 @@ void consulta(PACIENTE *p, int qtdeP, MEDICO *m, int qtdeM, LISTA *l)
         return;
     }
 
-    novo->paciente = &p[opPaciente - 1];
-    novo->medico = &m[opMedico - 1];
+    // Alocar memória para um novo paciente e copia os dados
+    novo->paciente = (PACIENTE *)malloc(sizeof(PACIENTE));
+    if (novo->paciente == NULL)
+    {
+        printf("Erro ao alocar memoria!\n");
+        free(novo);
+        return;
+    }
+
+    memcpy(novo->paciente, &p[opPaciente - 1], sizeof(PACIENTE)); //copia os dados do paciente para o novo atendimento
+    
+    novo->medico = (MEDICO *)malloc(sizeof(MEDICO));
+    if (novo->medico == NULL)
+    {
+        printf("Erro ao alocar memoria!\n");
+        return;
+    }
+    // Copia os dados do médico selecionado para a estrutura alocada dinamicamente
+    strcpy(novo->medico->nome, m[opMedico - 1].nome);
+    strcpy(novo->medico->especialidade, m[opMedico - 1].especialidade);
+
     strcpy(novo->motivo, motivo);
     novo->prioridade = prioridade;
 
-    // insere o atendimento na lista
+    //insere o atendimento na lista
     inserir(l, novo);
 
     // exibe as informações do atendimento
@@ -371,24 +391,25 @@ void listarAtendimentos(LISTA *l)
 {
     if (l == NULL || l->inicio == NULL)
     {
-        printf("Nenhum atendimento realizado!\n");
+        printf("Nenhum atendimento realizado ainda!\n");
         return;
     }
 
-    printf("\nAtendimentos Cadastrados: ");
+    printf("\nLista de Atendimentos Realizados:\n");
     ITEM *atual = l->inicio;
     while (atual != NULL)
     {
         ATENDIMENTO *atendimento = (ATENDIMENTO *)atual->chave;
         if (atendimento != NULL)
         {
-            printf("\nPaciente: %s\n", atendimento->paciente->nome);
-            printf("Medico: %s\t", atendimento->medico->nome);
+            printf("Paciente: %s\n", atendimento->paciente->nome); // Agora acessa a cópia independente do paciente
+            printf("Medico: %s\n", atendimento->medico->nome);
             printf("Especialidade: %s\n", atendimento->medico->especialidade);
-            printf("Motivo da consulta: %s\n", atendimento->motivo);
+            printf("Motivo: %s\n", atendimento->motivo);
             printf("Prioridade: %s\n", (atendimento->prioridade == 1 ? "Leve" : (atendimento->prioridade == 2 ? "Moderada" : "Grave")));
+            printf("\n");
+            atual = atual->prox;
         }
-        atual = atual->prox;
     }
 }
 
@@ -619,7 +640,26 @@ ITEM *buscaSequencialMotivo(LISTA *atendimento, const char *motivo)
     return NULL;
 }
 
+// Libera a memória alocada para a lista de atendimentos
+void liberarLista(LISTA *l)
+{
+    if (l == NULL)
+        return;
 
+    ITEM *atendimentoAtual = l->inicio;
+    while (atendimentoAtual != NULL)
+    {
+        ATENDIMENTO *atendimento = (ATENDIMENTO *)atendimentoAtual->chave;
+        free(atendimento->paciente); // Liberar a memória do paciente
+        free(atendimento);           // Liberar o próprio atendimento
+        ITEM *prox = atendimentoAtual->prox;
+        free(atendimentoAtual); // Liberar o nó da lista
+        atendimentoAtual = prox;
+    }
+
+    l->inicio = NULL;
+    l->qtde = 0;
+}
 
 int main()
 {
@@ -628,9 +668,11 @@ int main()
 
     PACIENTE *novoPaciente = NULL;
     MEDICO *novoMedico = NULL;
+
     int qtdePacientes = 0;
     int qtdeMedicos = 0;
     int op, aux_opc, aux_opc_edit;
+
 
     do
     {
@@ -645,10 +687,11 @@ int main()
         printf("Digite uma opcao: ");
         scanf("%d", &op);
         getchar(); // Limpa o buffer de entrada após o scanf
+
         switch (op)
         {
-        case 1: // CADASTRO
-            printf("\n1 - Cadastrar paciente\n");
+        case 1: //CADASTRO
+            printf("1 - Cadastrar paciente\n");
             printf("2 - Cadastrar medico\n");
             printf("Digite uma opcao: ");
             scanf("%d", &aux_opc);
@@ -657,14 +700,30 @@ int main()
             switch (aux_opc)
             {
             case 1:
-                novoPaciente = realloc(novoPaciente, (qtdePacientes + 1) * sizeof(PACIENTE));
-                novoPaciente[qtdePacientes] = *cadastrarPaciente();
-                qtdePacientes++; // CORRIGIR
+                // Cadastrar paciente
+                if (qtdePacientes == 0)
+                    novoPaciente = (PACIENTE *)malloc(sizeof(PACIENTE));
+                else
+                    novoPaciente = (PACIENTE *)realloc(novoPaciente, (qtdePacientes + 1) * sizeof(PACIENTE));
+                if (novoPaciente == NULL)
+                {
+                    printf("Erro ao alocar memoria!\n");
+                    break;
+                }
+                novoPaciente[qtdePacientes++] = *cadastrarPaciente();
                 break;
             case 2:
-                novoMedico = realloc(novoMedico, (qtdeMedicos + 1) * sizeof(MEDICO));
-                novoMedico[qtdeMedicos] = *cadastrarMedico();
-                qtdeMedicos++; // CORRIGIR
+                // Cadastrar médico
+                if (qtdeMedicos == 0)
+                    novoMedico = (MEDICO *)malloc(sizeof(MEDICO));
+                else
+                    novoMedico = (MEDICO *)realloc(novoMedico, (qtdeMedicos + 1) * sizeof(MEDICO));
+                if (novoMedico == NULL)
+                {
+                    printf("Erro ao alocar memoria!\n");
+                    break;
+                }
+                novoMedico[qtdeMedicos++] = *cadastrarMedico();
                 break;
             default:
                 break;
@@ -679,11 +738,9 @@ int main()
             switch (aux_opc)
             {
             case 1:
-                // qsort(novoPaciente, qtdePacientes, sizeof(PACIENTE), compararPacientes); VERIFICAR!!!!!
                 listarPacientes(novoPaciente, qtdePacientes);
                 break;
             case 2:
-                // qsort(novoMedico, qtdeMedicos, sizeof(MEDICO), compararMedicos);
                 listarMedicos(novoMedico, qtdeMedicos);
                 break;
             default:
@@ -691,7 +748,6 @@ int main()
                 break;
             }
             break;
-
         case 3: // GERENCIAR ATENDIMENTOS
             printf("\n1 - Realizar atendimento\n");
             printf("2 - Listar atendimento\n");
@@ -702,7 +758,7 @@ int main()
 
             switch (aux_opc)
             {
-            case 1:
+            case 1: //realiza atendimento
                 consulta(novoPaciente, qtdePacientes, novoMedico, qtdeMedicos, &atendimentos);
                 break;
             case 2:
@@ -818,27 +874,23 @@ int main()
                 }
                 break;
             default:
+                printf("Opcao invalida!\n");
                 break;
             }
         case 0:
+            // Sair do programa
+            liberarLista(&atendimentos);
+            free(novoPaciente);
+            free(novoMedico);
             printf("Saindo do sistema\n");
             break;
+
         default:
             printf("Opcao invalida!\n");
             break;
         }
-    } while (op != 0);
-    free(novoPaciente);
-    free(novoMedico);
 
-    // Libere também a memória utilizada pela lista de atendimentos
-    ITEM *atual = atendimentos.inicio;
-    while (atual != NULL)
-    {
-        ITEM *temp = atual;
-        atual = atual->prox;
-        free(temp->chave); // Libera o atendimento
-        free(temp);        // Libera o item da lista
-    }
+    } while (op != 0);
+
     return 0;
 }
