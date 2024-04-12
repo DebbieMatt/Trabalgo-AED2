@@ -6,7 +6,6 @@
 #include "Medico.h"
 #include "Consulta.h"
 #include "Dados.h"
-#include "Arquivo.h"
 
 int main()
 {
