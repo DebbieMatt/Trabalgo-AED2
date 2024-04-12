@@ -20,5 +20,7 @@ void alterarMedicoAtendimento(LISTA *atendimentos, MEDICO *medicos, int qtdeMedi
 void encerrarConsulta(LISTA *atendimentos);
 void salvarAtendimentosEmArquivo(LISTA *atendimentos);
 void imprimirConteudoDoArquivo(PACIENTE *novoPaciente);
+void salvarAtendimentosEmArquivo(LISTA *atendimentos);
+void imprimirConteudoDoArquivo(PACIENTE *novoPaciente);
 
 #endif
