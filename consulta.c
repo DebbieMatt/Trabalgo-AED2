@@ -268,3 +268,50 @@ void encerrarConsulta(LISTA *atendimentos)
 
     printf("Atendimento encerrado com sucesso!\n");
 }
+
+void salvarAtendimentosEmArquivo(LISTA *atendimentos)
+{
+    FILE *arq = fopen("atendimentos.txt", "w"); // abre ou cria um arquivo txt para escrita.
+
+    if (arq)
+    {
+        ITEM *atual = atendimentos->inicio;
+        while (atual != NULL)
+        {
+            ATENDIMENTO *atendimento = (ATENDIMENTO *)atual->chave;
+            fprintf(arq, "Paciente: %s\n", atendimento->paciente->nome);
+            fprintf(arq, "Idade: %d\n", atendimento->paciente->idade);
+            fprintf(arq, "Medico: %s\n", atendimento->medico->nome);
+            fprintf(arq, "Especialidade: %s\n", atendimento->medico->especialidade);
+            fprintf(arq, "Motivo: %s\n", atendimento->motivo);
+            fprintf(arq, "Prioridade: %d\n\n", atendimento->prioridade);
+            atual = atual->prox;
+        }
+        fclose(arq); // fecha o arquivo.
+    }
+    else
+    {
+        printf("ERRO: nao é possivel abrir o arquivo.");
+    }
+}
+
+void imprimirConteudoDoArquivo(PACIENTE *novoPaciente)
+{
+    FILE *arq = fopen("atendimentos.txt", "r"); // Abre o arquivo em modo de leitura
+
+    if (arq == NULL)
+    {
+        printf("ERRO: nao é possível abrir o arquivo.\n");
+        return;
+    }
+
+    char linha[100]; // Buffer para armazenar cada linha do arquivo
+
+    // Lê cada linha do arquivo até o final
+    while (fgets(linha, sizeof(linha), arq) != NULL)
+    {
+        printf("%s", linha); // Imprime a linha
+    }
+
+    fclose(arq); // Fecha o arquivo
+}
